@@ -1,0 +1,28 @@
+# Data files
+food-101/images/
+
+# User-generated content
+app_data/user_images/*
+app_data/user_embeddings/*
+app_data/app_database.db
+
+# Keep directory structure with .gitkeep
+!app_data/user_images/.gitkeep
+!app_data/user_embeddings/.gitkeep
+
+# System files
+.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints
+
+# Environment
+venv/
+env/
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.swp
