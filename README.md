@@ -1,8 +1,8 @@
-# 🍕 Food Recommendation App
+# Food Recommendation App
 
 A local-first food recommendation system that learns from your visual preferences using computer vision and similarity matching.
 
-## ✨ Features
+## Features
 
 - **Visual Food Recognition**: Upload food photos and get instant recommendations
 - **Smart Similarity Search**: Uses ResNet50 + FAISS for fast, accurate matching
@@ -11,7 +11,7 @@ A local-first food recommendation system that learns from your visual preference
 - **101 Food Categories**: Recommendations from curated Food-101 dataset
 - **Minimalist UI**: Clean, responsive Streamlit interface
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 - Python 3.8+
@@ -36,18 +36,18 @@ Open your browser to `http://localhost:8501`
 ## 📱 How to Use
 
 1. **Upload**: Click "Choose a food image" and select a food photo
-2. **Process**: Click "🔍 Get Recommendations" to analyze your image  
+2. **Process**: Click "Get Recommendations" to analyze your image  
 3. **Discover**: Browse recommended similar foods with similarity scores
 4. **Feedback**: Use 👍/👎 buttons to train the system
-5. **Manage**: Click "🗂️ Manage Images" to view, delete, or get details about your uploads
-6. **View**: Click 👁️ on any image to see full-size view with metadata and feedback history
+5. **Manage**: Click "Manage Images" to view, delete, or get details about your uploads
+6. **View**: Click on any image to see full-size view with metadata and feedback history
 7. **Delete**: Remove unwanted images with confirmation (cleans up files and database)
 8. **Explore**: Upload more images to build your preference profile
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-📁 Project Structure
+Project Structure
 ├── main.py                    # Streamlit web interface
 ├── config.py                  # Configuration settings
 ├── models/
@@ -66,14 +66,7 @@ Open your browser to `http://localhost:8501`
     └── app_database.db        # SQLite database
 ```
 
-## 🎯 Performance
-
-- **Startup**: < 15 seconds (loads ResNet50 + FAISS index)
-- **Image Processing**: < 3 seconds per image
-- **Recommendations**: < 0.5 seconds (1,010 embeddings)
-- **Storage**: ~10MB for index + embeddings + database
-
-## ⚙️ Configuration
+## Configuration
 
 Edit `config.py` to customize:
 - Number of recommendations (1-20)
@@ -82,7 +75,7 @@ Edit `config.py` to customize:
 - File size limits
 - Model parameters
 
-## 🔧 Commands
+## Commands
 
 ```bash
 # Validate Food-101 dataset
@@ -98,14 +91,7 @@ python -m data.food101_processor --build-index-only
 python test_complete_system.py
 ```
 
-## 📊 System Requirements
-
-- **RAM**: 4GB minimum (8GB recommended)
-- **Storage**: 10GB for full dataset (1GB for sample)
-- **CPU**: Modern multi-core processor
-- **GPU**: Optional (CPU-only mode supported)
-
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **ML**: PyTorch, ResNet50, FAISS
 - **UI**: Streamlit, HTML/CSS
@@ -113,44 +99,7 @@ python test_complete_system.py
 - **Dataset**: Food-101 (101 categories, 101k images)
 - **Features**: Image management, deletion, metadata viewing
 
-## 📈 Development Phases
-
-### ✅ Phase 1 - MVP (Completed)
-- Core ML pipeline (ResNet50 + FAISS)
-- Streamlit UI with image management
-- User image upload & processing
-- Food-101 preprocessing
-- Like/dislike feedback
-- Local SQLite storage
-- Image viewing and deletion functionality
-- Metadata display and feedback history
-
-### 🔄 Phase 2 - Enhancements (Future)
-- Advanced feedback learning
-- Improved UI/UX
-- Performance optimizations
-- Export/import preferences
-- Mobile-responsive design
-
-## 🚨 Troubleshooting
-
-**"FAISS index not loaded"**
-```bash
-python -m data.food101_processor --full-setup --max-images-per-class 10
-```
-
-**"OpenMP library conflicts"**
-```bash
-export KMP_DUPLICATE_LIB_OK=TRUE
-streamlit run main.py
-```
-
-**"Module not found errors"**
-```bash
-pip install -r requirements.txt  # If available
-# or install dependencies manually
-```
-## 📦 Included Files
+## Included Files
 
 This repository includes pre-computed embeddings and a FAISS index from the Food-101 dataset, allowing you to run the application without downloading the full 5GB dataset:
 
@@ -162,19 +111,11 @@ If you want to work with the full dataset or regenerate embeddings:
 1. Download Food-101 from [https://data.vision.ee.ethz.ch/cvl/datasets_extra/food-101/](https://data.vision.ee.ethz.ch/cvl/datasets_extra/food-101/)
 2. Run `python -m data.food101_processor --full-setup`
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📄 License
+## License
 
 This project is for educational and research purposes.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Food-101 dataset by ETH Zurich
 - PyTorch and torchvision teams
@@ -183,4 +124,4 @@ This project is for educational and research purposes.
 
 ---
 
-**Enjoy discovering new foods! 🍽️✨**
+**Enjoy discovering new foods!**
