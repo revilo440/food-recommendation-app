@@ -33,7 +33,7 @@ streamlit run main.py
 
 Open your browser to `http://localhost:8501`
 
-## 📱 How to Use
+## How to Use
 
 1. **Upload**: Click "Choose a food image" and select a food photo
 2. **Process**: Click "Get Recommendations" to analyze your image  
