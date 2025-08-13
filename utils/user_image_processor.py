@@ -26,6 +26,11 @@ class UserImageProcessor:
     Handles validation, feature extraction, storage, and recommendations.
     """
     
+    _shared_feature_extractor = None
+    _shared_similarity_engine = None
+    _shared_database_manager = None
+    _components_initialized = False
+    
     def __init__(self):
         """Initialize the user image processor."""
         self.feature_extractor = None
@@ -36,24 +41,37 @@ class UserImageProcessor:
         os.makedirs(USER_IMAGES_PATH, exist_ok=True)
         os.makedirs(USER_EMBEDDINGS_PATH, exist_ok=True)
         
+        self._init_components()
+        
         logging.info("UserImageProcessor initialized")
     
     def _init_components(self):
-        """Initialize ML components if not already loaded."""
-        if self.feature_extractor is None:
-            self.feature_extractor = FeatureExtractor()
+        """Initialize ML components using cached instances to avoid redundant loading."""
+        if not UserImageProcessor._components_initialized:
+            logging.info("Initializing shared ML components (first time)")
+            
+            if UserImageProcessor._shared_feature_extractor is None:
+                UserImageProcessor._shared_feature_extractor = FeatureExtractor()
+                logging.info("FeatureExtractor loaded and cached")
+            
+            if UserImageProcessor._shared_similarity_engine is None:
+                UserImageProcessor._shared_similarity_engine = SimilarityEngine()
+                # Load FAISS index if available
+                if os.path.exists(FAISS_INDEX_PATH):
+                    UserImageProcessor._shared_similarity_engine.load_faiss_index()
+                    logging.info("FAISS index loaded and cached")
+                else:
+                    logging.warning("FAISS index not found. Run Food-101 preprocessing first.")
+            
+            if UserImageProcessor._shared_database_manager is None:
+                UserImageProcessor._shared_database_manager = DatabaseManager()
+                logging.info("DatabaseManager loaded and cached")
+            
+            UserImageProcessor._components_initialized = True
         
-        if self.similarity_engine is None:
-            self.similarity_engine = SimilarityEngine()
-            # Load FAISS index if available
-            if os.path.exists(FAISS_INDEX_PATH):
-                self.similarity_engine.load_faiss_index()
-                logging.info("Loaded FAISS index for recommendations")
-            else:
-                logging.warning("FAISS index not found. Run Food-101 preprocessing first.")
-        
-        if self.database_manager is None:
-            self.database_manager = DatabaseManager()
+        self.feature_extractor = UserImageProcessor._shared_feature_extractor
+        self.similarity_engine = UserImageProcessor._shared_similarity_engine
+        self.database_manager = UserImageProcessor._shared_database_manager
     
     def generate_unique_filename(self, original_filename: str) -> str:
         """
@@ -89,7 +107,6 @@ class UserImageProcessor:
             Dictionary with validation and save results
         """
         try:
-            self._init_components()
             
             # Generate unique filename
             unique_filename = self.generate_unique_filename(original_filename)
@@ -156,7 +173,6 @@ class UserImageProcessor:
             Dictionary with processing results including image_id
         """
         try:
-            self._init_components()
             
             image_path = image_info["image_path"]
             
@@ -212,8 +228,6 @@ class UserImageProcessor:
             Dictionary with recommendations and metadata
         """
         try:
-            self._init_components()
-            
             if not user_image_ids:
                 return {
                     "success": False,
@@ -227,15 +241,16 @@ class UserImageProcessor:
                     "error": "Food-101 index not available. Run preprocessing first."
                 }
             
+            all_user_images = self.database_manager.get_user_images(processed_only=True)
+            user_images_dict = {img['id']: img for img in all_user_images}
+            
             # Load user embeddings
             user_embeddings = []
             valid_image_ids = []
             
             for image_id in user_image_ids:
                 try:
-                    # Get embedding path from database
-                    user_images = self.database_manager.get_user_images(processed_only=True)
-                    user_image = next((img for img in user_images if img['id'] == image_id), None)
+                    user_image = user_images_dict.get(image_id)
                     
                     if user_image and user_image['embedding_path']:
                         embedding = np.load(user_image['embedding_path'])
@@ -286,7 +301,6 @@ class UserImageProcessor:
             Dictionary with feedback storage result
         """
         try:
-            self._init_components()
             
             self.database_manager.store_feedback(
                 user_image_id=user_image_id,
@@ -318,7 +332,6 @@ class UserImageProcessor:
             Dictionary with deletion result
         """
         try:
-            self._init_components()
             
             # Get image details before deletion
             details_result = self.database_manager.get_user_image_details(image_id)
@@ -382,7 +395,6 @@ class UserImageProcessor:
             Dictionary with image details and metadata
         """
         try:
-            self._init_components()
             
             result = self.database_manager.get_user_image_details(image_id)
             if not result["success"]:
@@ -421,7 +433,6 @@ class UserImageProcessor:
             Dictionary with user images summary
         """
         try:
-            self._init_components()
             
             user_images = self.database_manager.get_user_images()
             db_stats = self.database_manager.get_database_stats()
